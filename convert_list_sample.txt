@@ -1,0 +1,13 @@
+
+#service start here
+/Sicar/Data/rofile.dbf
+/Sicar/Data/complain.dbf
+/Sicar/Data/HISTORY.DBF
+/Sicar/Data/arcomp.dbf
+
+#accounting starts here
+/Accar/Data/journal.dbf
+/Accar/Data/JOURNALS.096
+/Accar/Data/JOURNALS.086
+/Accar/Data/JOURNALS.076
+

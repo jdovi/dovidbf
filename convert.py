@@ -1,14 +1,19 @@
 from dbfpy import dbf
-import pdb
-import csv
-import os
+import pdb, csv, os, re, datetime, time
 
 def makecsv(ifile,ofile):
+    """
+    funcstion for converting a dbf file to csv
+    takes an input dbf file and returns a csv file.
+    The file is put in the csvfiles folder
+    """
     db = dbf.Dbf(ifile)
     hdr = ''
     with open(ofile, 'w') as f:
         c = csv.writer(f)
-
+        
+        row = 0
+        size = float(db.recordCount)
         # write the head to the CSV file
         c.writerow(db.fieldNames)
 
@@ -16,10 +21,73 @@ def makecsv(ifile,ofile):
         for rec in db:
             # using asList makes a list as opposed to asDict
             c.writerow(rec.asList())
+            percent = round(row/size*100,1)
+            if percent < 100:
+                print percent,' percent complete         \r',
+            row = row + 1
+        print  '100% percent complete         \r'
+        print ''
 
-ifile = '/media/adam/adamcache/Accar/Data/Journals.106'
-oname = '.csv'.join(os.path.basename(ifile))
-opath = '/media/adam/csvfiles'
-ofile = opath + oname
+def get_list(path):
+    """
+    function to get the list of paths.  returns a list that can be looped through.
+    """
+    with open(path, 'r') as f:
+        path_list = f.readlines()
+        path_list = [p.replace('\n','') for p in path_list]
+        return path_list
 
-makecsv(ifile,ofile)
+def need_refresh(file_name):
+    """
+    function to check if a file has been modified since last update.  
+    returns True if the file has changed.
+    """
+    #check to see if the file has ever been created.
+    if os.path.exists(file_name):
+        last_modified = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(file_name))),'%a %b %d %H:%M:%S %Y'))
+    else:
+        #set the times if the file doesn't exists to ensure the update runs
+        last_modified = datetime.datetime.strftime((datetime.datetime.now() + datetime.timedelta(0,-14401)),'%Y-%m-%d %H:%M:%S')
+    cut_off = datetime.datetime.strftime((datetime.datetime.now() + datetime.timedelta(0,-14400)),'%Y-%m-%d %H:%M:%S')
+    if last_modified < cut_off:
+        return True
+    else:
+        print('%s is already up to date' % file_name)
+        return False
+
+#get the file list that should be converted to csv
+list_file = '/home/buildingspeak/convert_list.txt'
+list_of_paths = get_list(list_file)
+
+#set env varibles to build paths from
+#for Dovi /media/adam
+base_ipath = '/home/buildingspeak/adamcache'
+base_opath = '/home/buildingspeak/'
+
+for path in list_of_paths:
+    #create the path for the dbf input file
+    ifile = base_ipath + path
+    #create the path for the csv output file
+    oname = re.sub(r'\.dbf|\.DBF','',os.path.basename(ifile)) + '.csv'
+    opath = base_opath + 'csvfiles/'
+    ofile = opath + oname
+    #check to see if the line is a valid path and if the path needs refreshing
+    if path.startswith('/') and need_refresh(ofile):
+        #convert the dbf file to csv
+        try:
+            print('attempting to convert %s' % oname)
+            makecsv(ifile,ofile)
+        except Exception, e:
+            print ('there was an initial problem with conversion')
+            if e.filename.endswith('FPT'):
+                print('found a name issue with the FPT file')
+                file_name = re.sub(r'\.FPT','.fpt',e.filename)
+                os.rename(file_name,e.filename)
+                try:
+                    print('retry conversion for %s' % oname)
+                    makecsv(ifile,ofile)
+                except Exception, e:
+                    print('failed: %s' % e)            
+            print (e)
+            pass
+    
