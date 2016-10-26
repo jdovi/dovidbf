@@ -55,22 +55,22 @@ def need_refresh(file_name):
         print('%s is already up to date' % file_name)
         return False
 
-#get the file list that should be converted to csv
-list_file = '/home/buildingspeak/convert_list.txt'
-list_of_paths = get_list(list_file)
-
 #set env varibles to build paths from
 #for Dovi /media/adam
-base_ipath = '/home/buildingspeak/adamcache'
-base_opath = '/home/buildingspeak/'
+base_ipath = os.environ.get('ADAM_IMPORT_PATH')
+base_opath = os.environ.get('ADAM_EXPORT_PATH')
+base_adam_path = os.environ.get('ADAM_PATH')
+
+#get the file list that should be converted to csv
+list_file = base_adam_path + '/convert_list.txt'
+list_of_paths = get_list(list_file)
 
 for path in list_of_paths:
     #create the path for the dbf input file
-    ifile = base_ipath + path
+    ifile = base_ipath + re.sub(r'\r','',path)
     #create the path for the csv output file
     oname = re.sub(r'\.dbf|\.DBF','',os.path.basename(ifile)) + '.csv'
-    opath = base_opath + 'csvfiles/'
-    ofile = opath + oname
+    ofile = base_opath + '/' + oname
     #check to see if the line is a valid path and if the path needs refreshing
     if path.startswith('/') and need_refresh(ofile):
         #convert the dbf file to csv
