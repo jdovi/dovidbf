@@ -21,13 +21,17 @@ def makecsv(ifile,ofile):
         for rec in db:
             # using asList makes a list as opposed to asDict
             c.writerow(rec.asList())
+            """
             percent = round(row/size*100,1)
             if percent < 100:
-                print percent,' percent complete         \r',
+                #print percent,' percent complete         \r',
+            """
             row = row + 1
-        print  '100% percent complete         \r'
-        print ''
-
+        """
+        #print  '100% percent complete         \r'
+        #print ''
+        """
+        
 def get_list(path):
     """
     function to get the list of paths.  returns a list that can be looped through.

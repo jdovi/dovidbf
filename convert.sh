@@ -1,4 +1,6 @@
 #!/bin/bash
+source $HOME/.pam_environment
 source activate dovidbf
-python /home/dovimotors/dovidbf/convert.py
+cd /home/dovimotors/dovidbf
+python convert.py
 source deactivate
