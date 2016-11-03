@@ -76,7 +76,7 @@ for path in list_of_paths:
     oname = re.sub(r'\.dbf|\.DBF','',os.path.basename(ifile)) + '.csv'
     ofile = base_opath + '/' + oname
     #check to see if the line is a valid path and if the path needs refreshing
-    if path.startswith('/') and need_refresh(ofile):
+    if path.startswith('/') and need_refresh(ifile):
         #convert the dbf file to csv
         try:
             print('attempting to convert %s' % oname)
