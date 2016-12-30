@@ -41,19 +41,21 @@ def get_list(path):
         path_list = [p.replace('\n','') for p in path_list]
         return path_list
 
-def need_refresh(file_name):
+def need_refresh(file_name, csv_file):
     """
     function to check if a file has been modified since last update.  
     returns True if the file has changed.
     """
+    pdb.set_trace()
     #check to see if the file has ever been created.
-    if os.path.exists(file_name):
+    if os.path.exists(file_name) and os.path.exists(csv_file):
         last_modified = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(file_name))),'%a %b %d %H:%M:%S %Y'))
+        cut_off = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(csv_file))),'%a %b %d %H:%M:%S %Y'))
     else:
         #set the times if the file doesn't exists to ensure the update runs
         last_modified = datetime.datetime.strftime((datetime.datetime.now() + datetime.timedelta(0,-14401)),'%Y-%m-%d %H:%M:%S')
-    cut_off = datetime.datetime.strftime((datetime.datetime.now() + datetime.timedelta(0,-14400)),'%Y-%m-%d %H:%M:%S')
-    if last_modified < cut_off:
+        cut_off = datetime.datetime.strftime((datetime.datetime.now() + datetime.timedelta(0,-14400)),'%Y-%m-%d %H:%M:%S')
+    if last_modified > cut_off:
         return True
     else:
         print('%s is already up to date' % file_name)
@@ -76,7 +78,7 @@ for path in list_of_paths:
     oname = re.sub(r'\.dbf|\.DBF','',os.path.basename(ifile)) + '.csv'
     ofile = base_opath + '/' + oname
     #check to see if the line is a valid path and if the path needs refreshing
-    if path.startswith('/') and need_refresh(ifile):
+    if path.startswith('/') and need_refresh(ifile,ofile):
         #convert the dbf file to csv
         try:
             print('attempting to convert %s' % oname)
