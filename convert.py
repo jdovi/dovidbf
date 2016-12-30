@@ -46,7 +46,6 @@ def need_refresh(file_name, csv_file):
     function to check if a file has been modified since last update.  
     returns True if the file has changed.
     """
-    pdb.set_trace()
     #check to see if the file has ever been created.
     if os.path.exists(file_name) and os.path.exists(csv_file):
         last_modified = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(file_name))),'%a %b %d %H:%M:%S %Y'))
