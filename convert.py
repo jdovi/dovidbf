@@ -7,7 +7,8 @@ def makecsv(ifile,ofile):
     takes an input dbf file and returns a csv file.
     The file is put in the csvfiles folder
     """
-    db = dbf.Dbf(ifile)
+
+    db = dbf.Dbf(ifile,ignoreErrors=True)
     hdr = ''
     with open(ofile, 'w') as f:
         c = csv.writer(f)
@@ -71,6 +72,7 @@ list_file = base_adam_path + '/convert_list.txt'
 list_of_paths = get_list(list_file)
 
 for path in list_of_paths:
+    
     #create the path for the dbf input file
     ifile = base_ipath + re.sub(r'\r','',path)
     #create the path for the csv output file
@@ -81,6 +83,7 @@ for path in list_of_paths:
         #convert the dbf file to csv
         try:
             print('attempting to convert %s' % oname)
+            
             makecsv(ifile,ofile)
         except Exception, e:
             print ('there was an initial problem with conversion')
