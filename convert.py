@@ -47,19 +47,18 @@ def need_refresh(file_name, csv_file):
     function to check if a file has been modified since last update.  
     returns True if the file has changed.
     """
-    #check to see if the file has ever been created.
+    #check to see if the file has ever been created.  If it doesn't exist do the update.
     if os.path.exists(file_name) and os.path.exists(csv_file):
-        last_modified = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(file_name))),'%a %b %d %H:%M:%S %Y'))
-        cut_off = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(csv_file))),'%a %b %d %H:%M:%S %Y'))
+        dbf_date = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(file_name))),'%a %b %d %H:%M:%S %Y'))
+        csv_date = str(datetime.datetime.strptime(time.ctime((os.path.getmtime(csv_file))),'%a %b %d %H:%M:%S %Y'))
+        #Check to see if the csv file is newer than the dbf file
+        if csv_date > dbf_date:
+            print('%s is already up to date' % csv_file)
+            return False
+        else:
+            return True
     else:
-        #set the times if the file doesn't exists to ensure the update runs
-        last_modified = datetime.datetime.strftime((datetime.datetime.now() + datetime.timedelta(0,-14401)),'%Y-%m-%d %H:%M:%S')
-        cut_off = datetime.datetime.strftime((datetime.datetime.now() + datetime.timedelta(0,-14400)),'%Y-%m-%d %H:%M:%S')
-    if last_modified > cut_off:
         return True
-    else:
-        print('%s is already up to date' % file_name)
-        return False
 
 #set env varibles to build paths from
 #for Dovi /media/adam
