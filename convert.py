@@ -62,9 +62,10 @@ def need_refresh(file_name, csv_file):
 
 #set env varibles to build paths from
 #for Dovi /media/adam
-base_ipath = os.environ.get('ADAM_IMPORT_PATH')
+#pdb.set_trace()
+base_ipath = os.environ.get('ADAM_PATH')
 base_opath = os.environ.get('ADAM_EXPORT_PATH')
-base_adam_path = os.environ.get('ADAM_PATH')
+base_adam_path = os.environ.get('BASE_SHARED_PATH')
 
 #get the file list that should be converted to csv
 list_file = base_adam_path + '/convert_list.txt'
