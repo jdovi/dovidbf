@@ -77,7 +77,7 @@ for path in list_of_paths:
     ifile = base_ipath + re.sub(r'\r','',path)
     #create the path for the csv output file
     oname = re.sub(r'\.dbf|\.DBF','',os.path.basename(ifile)) + '.csv'
-    ofile = base_opath + '/' + oname
+    ofile = base_opath + oname
     #check to see if the line is a valid path and if the path needs refreshing
     if path.startswith('/') and need_refresh(ifile,ofile):
         #convert the dbf file to csv
